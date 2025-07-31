@@ -12,9 +12,8 @@ void print(int y, char* string){
 
 void _start() {
     char* text = "Hola";
-    //print(10, &text);
 
-    //print(10, text);
+    print(10, text);
 
     while (1);
 }
