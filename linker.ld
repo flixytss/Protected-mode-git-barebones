@@ -1,22 +1,18 @@
-/* linker.ld */
 ENTRY(_start)
 
 SECTIONS {
     . = 0x1000;
 
     .text : {
-        *(.text)
-    }
-
-    .rodata : {
-        *(.rodata)
+        *(.text*)
     }
 
     .data : {
-        *(.data)
+        *(.data*)
     }
 
     .bss : {
-        *(.bss COMMON)
+        *(.bss*)
+        *(COMMON)
     }
 }
