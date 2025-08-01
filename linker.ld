@@ -15,6 +15,4 @@ SECTIONS {
         *(.bss*)
         *(COMMON)
     }
-
-    . = ALIGN(512);
 }
