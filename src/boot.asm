@@ -1,19 +1,23 @@
-; src/boot.asm
 [org 0x7C00]
 bits 16
 
 jmp start
+nop
+
 start:
     cli
     xor ax, ax
     mov ds, ax
     mov es, ax
+    mov ss, ax
+    mov sp, 0x7C00
 
+    ; Modo texto 80x25
     mov ax, 0x0003
     int 0x10
 
     mov ah, 0x02
-    mov al, 10
+    mov al, 14
     mov ch, 0
     mov cl, 2
     mov dh, 0
@@ -24,16 +28,21 @@ start:
     int 0x13
     jc disk_error
 
+
     cli
+
     lgdt [gdt_descriptor]
 
+    ; Activar modo protegido
     mov eax, cr0
     or eax, 1
     mov cr0, eax
+
+    ; Far jump para limpiar prefetch y cargar CS con segmento código (0x08)
     jmp 0x08:protected_mode
 
 disk_error:
-    mov si, error_msg
+    mov si, err_msg
 .print_err:
     lodsb
     or al, al
@@ -44,45 +53,45 @@ disk_error:
 .done:
     jmp $
 
-error_msg db 'Disk Read Failed!', 0
+err_msg db 'Disk Error!', 0
 
 gdt_start:
-    dq 0
+    dq 0                      ; Null descriptor
 
-    dw 0xFFFF
+    dw 0xFFFF                 ; Código segmento (base 0, límite 4GB)
     dw 0x0000
     db 0x00
-    db 10011010b
-    db 11001111b
+    db 10011010b              ; Code segment, executable, readable, accessed=0, DPL=0, Present=1
+    db 11001111b              ; 4KiB granularity, 32-bit protected mode
     db 0x00
 
-    ; Datos plano
-    dw 0xFFFF
+    dw 0xFFFF                 ; Datos segmento (base 0, límite 4GB)
     dw 0x0000
     db 0x00
-    db 10010010b
+    db 10010010b              ; Data segment, writable, accessed=0, DPL=0, Present=1
     db 11001111b
     db 0x00
 
 gdt_end:
 
 gdt_descriptor:
-    dw gdt_end - gdt_start - 1
+    dw gdt_end - gdt_start -1
     dd gdt_start
 
 [bits 32]
 protected_mode:
+    ; Cargar segmentos de datos
     mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov ss, ax
-    mov esp, 0x9000
+    mov esp, 0x90000
 
-    jmp dword 0x10000
+    ; Salto far al kernel en offset 0 (base 0)
+    call dword 0x10000
 
-.hang:
     hlt
-    jmp .hang
+    jmp $
 
-times 510 - ($ - $$) db 0
+times 510-($-$$) db 0
 dw 0xAA55
