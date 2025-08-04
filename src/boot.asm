@@ -12,7 +12,6 @@ start:
     mov ss, ax
     mov sp, 0x7C00
 
-    ; Modo texto 80x25
     mov ax, 0x0003
     int 0x10
 
@@ -33,12 +32,10 @@ start:
 
     lgdt [gdt_descriptor]
 
-    ; Activar modo protegido
     mov eax, cr0
     or eax, 1
     mov cr0, eax
 
-    ; Far jump para limpiar prefetch y cargar CS con segmento código (0x08)
     jmp 0x08:protected_mode
 
 disk_error:
@@ -56,19 +53,19 @@ disk_error:
 err_msg db 'Disk Error!', 0
 
 gdt_start:
-    dq 0                      ; Null descriptor
+    dq 0        
 
-    dw 0xFFFF                 ; Código segmento (base 0, límite 4GB)
+    dw 0xFFFF          
     dw 0x0000
     db 0x00
-    db 10011010b              ; Code segment, executable, readable, accessed=0, DPL=0, Present=1
-    db 11001111b              ; 4KiB granularity, 32-bit protected mode
+    db 10011010b           
+    db 11001111b      
     db 0x00
 
-    dw 0xFFFF                 ; Datos segmento (base 0, límite 4GB)
+    dw 0xFFFF      
     dw 0x0000
     db 0x00
-    db 10010010b              ; Data segment, writable, accessed=0, DPL=0, Present=1
+    db 10010010b      
     db 11001111b
     db 0x00
 
@@ -80,14 +77,12 @@ gdt_descriptor:
 
 [bits 32]
 protected_mode:
-    ; Cargar segmentos de datos
     mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov ss, ax
     mov esp, 0x90000
 
-    ; Salto far al kernel en offset 0 (base 0)
     call dword 0x10000
 
     hlt
