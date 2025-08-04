@@ -1,21 +1,21 @@
 ENTRY(_start)
 
-SECTIONS
-{
+SECTIONS {
     . = 0x10000;
 
-    .text :
-    {
-        *(.text)
+    .text.start : {
+        *(.text.start)
     }
 
-    .data :
-    {
+    .text : {
+        *(.text*)
+    }
+
+    .data : {
         *(.data)
     }
 
-    .bss :
-    {
-        *(.bss)
+    .bss : {
+        *(.bss COMMON)
     }
 }
