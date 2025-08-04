@@ -11,6 +11,8 @@ bake:
 	dd if=out/boot.bin of=os.img bs=512 conv=notrunc
 	dd if=out/kernel.bin of=os.img bs=512 seek=1 conv=notrunc
 
-	cat out/boot.bin out/kernel.bin > cat.img
-
 	qemu-system-i386 -fda os.img
+clean:
+	rm os.img
+	rm out/*
+all: bake clean
