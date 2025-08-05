@@ -1,8 +1,4 @@
 #define MEMORY_SIZE 1024*8
-
-#define true 1
-#define false 0
-
 #define NULL ((void*)0)
 
 typedef unsigned long size_t;
@@ -105,7 +101,7 @@ static inline unsigned char inb(){
     __asm__ volatile("inb %1, %0" : "=a"(result) : "Nd"((unsigned short)0x60));
     return result;
 }
-char input(){
+unsigned char input(){
     unsigned char scancode = 0;
     char ascii = 0;
     while (1) {
@@ -164,6 +160,14 @@ char* input_while(){
     buffer[size+1]='\0';
 
     return buffer;
+}
+static inline int Compare(char** str, const char* lfts){
+    int str_size=0;
+    int lfts_size=0;
+    while((*str)[str_size]!='\0')str_size++;
+    while(lfts[lfts_size]!='\0')lfts_size++;
+
+    if(lfts_size>str_size)return 0;
 }
 
 __attribute__((section(".text.start"))) void _start(){
