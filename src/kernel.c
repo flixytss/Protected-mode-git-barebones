@@ -1,4 +1,5 @@
 #define MEMORY_SIZE (1024*8)
+#define MAX_BUFFER 64
 
 void printchar(unsigned int x, unsigned int y, char c){
     volatile char* video = (volatile char*)0xB8000;
@@ -51,7 +52,7 @@ char input(){
     while (1) {
         scancode = inb();
         if (scancode & 0x80) continue;
-        if (scancode < sizeof(scancode_ascii)) {
+        if (scancode < sizeof(scancode_ascii)){
             ascii = scancode_ascii[scancode];
             if (ascii != 0) {
                 while ((inb() & 0x80) == 0);
@@ -65,19 +66,36 @@ char input(){
 
 __attribute__((section(".text.start"))) void _start(){
     int x=0;
+    int y=0;
     char s;
+
+    char buffer[MAX_BUFFER];
+
+    int BUFFER = 0;
+
     while(1){
         s = input();
 
         if((unsigned char)s==0x0E){
-            printchar(x-1, 0, ' ');
-            move_cursor(x-1, 0);
+            printchar(x-1, y, ' ');
+            move_cursor(x-1, y);
             x--;
+            buffer[BUFFER]=' ';
+            BUFFER--;
+        }
+        else if((unsigned char)s==0x1C){
+            printchar(x, y, '\n');
+            printchar(x, y, ' ');
+            y++;
+            x=0;
+            move_cursor(x, y);
         }
         else{
-            printchar(x, 0, s);
-            move_cursor(x+1, 0);
+            printchar(x, y, s);
+            move_cursor(x+1, y);
             x++;
+            buffer[BUFFER]=s;
+            BUFFER++;
         }
     }
 
