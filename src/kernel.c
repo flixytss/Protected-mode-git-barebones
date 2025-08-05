@@ -130,6 +130,8 @@ __attribute__((section(".text.start"))) void _start(){
 
     for(int i=0;i<pr;i++)printchar(i, 2, str[i]);
 
+    if(Compare(&str, "poaa"))print(10, 10, "Is In");
+
     free(str);
 
     while (1);
