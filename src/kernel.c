@@ -1,5 +1,12 @@
-#define MEMORY_SIZE (1024*8)
+#define MEMORY_SIZE 1024*8
 #define MAX_BUFFER 64
+
+#define true 1
+#define false 0
+
+#define NULL ((void*)0)
+
+typedef unsigned long size_t;
 
 void printchar(unsigned int x, unsigned int y, char c){
     volatile char* video = (volatile char*)0xB8000;
@@ -17,6 +24,59 @@ void print(unsigned int x, unsigned int y, const char* c){
     }
 }
 //Memory
+static char memory[MEMORY_SIZE];
+
+typedef struct Block {
+    size_t size;
+    int free;
+    struct Block* next;
+} Block;
+
+#define BLOCK_SIZE sizeof(Block)
+
+static Block* free_list = (Block*)memory;
+
+void init_mem(){
+    free_list->size=MEMORY_SIZE-BLOCK_SIZE;
+    free_list->free=1;
+    free_list->next=NULL;
+}
+void* malloc(size_t size) {
+    Block* curr = free_list;
+    while (curr != NULL) {
+        if (curr->free && curr->size >= size) {
+            if (curr->size >= size + BLOCK_SIZE + 1) {
+                Block* new_block = (Block*)((char*)curr + BLOCK_SIZE + size);
+                new_block->size = curr->size - size - BLOCK_SIZE;
+                new_block->free = 1;
+                new_block->next = curr->next;
+                curr->next = new_block;
+                curr->size = size;
+            }
+
+            curr->free = 0;
+            return (char*)curr + BLOCK_SIZE;
+        }
+        curr = curr->next;
+    }
+    return NULL;
+}
+void my_free(void* ptr) {
+    if (!ptr) return;
+
+    Block* block = (Block*)((char*)ptr - BLOCK_SIZE);
+    block->free = 1;
+
+    Block* curr = free_list;
+    while (curr != NULL && curr->next != NULL) {
+        if (curr->free && curr->next->free) {
+            curr->size += BLOCK_SIZE + curr->next->size;
+            curr->next = curr->next->next;
+        } else {
+            curr = curr->next;
+        }
+    }
+}
 
 //Cursor
 void outb(unsigned short port, unsigned char value){__asm__ volatile ("outb %0, %1" : : "a"(value), "Nd"(port));}
