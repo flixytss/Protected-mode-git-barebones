@@ -1,5 +1,4 @@
 #define MEMORY_SIZE 1024*8
-#define MAX_BUFFER 64
 
 #define true 1
 #define false 0
@@ -61,7 +60,7 @@ void* malloc(size_t size) {
     }
     return NULL;
 }
-void my_free(void* ptr) {
+void free(void* ptr) {
     if (!ptr) return;
 
     Block* block = (Block*)((char*)ptr - BLOCK_SIZE);
@@ -124,14 +123,13 @@ char input(){
     }
 }
 
-__attribute__((section(".text.start"))) void _start(){
+char* input_while(){
     int x=0;
     int y=0;
     char s;
 
-    char buffer[MAX_BUFFER];
-
-    int BUFFER = 0;
+    size_t size=0;
+    char* buffer=(char*)malloc((size+1)*sizeof(char));
 
     while(1){
         s = input();
@@ -140,8 +138,9 @@ __attribute__((section(".text.start"))) void _start(){
             printchar(x-1, y, ' ');
             move_cursor(x-1, y);
             x--;
-            buffer[BUFFER]=' ';
-            BUFFER--;
+
+            buffer[size-1]='\0';
+            size--;
         }
         else if((unsigned char)s==0x1C){
             printchar(x, y, '\n');
@@ -149,15 +148,36 @@ __attribute__((section(".text.start"))) void _start(){
             y++;
             x=0;
             move_cursor(x, y);
+
+            break;
         }
         else{
             printchar(x, y, s);
             move_cursor(x+1, y);
             x++;
-            buffer[BUFFER]=s;
-            BUFFER++;
+
+            buffer[size]=s;
+            size++;
         }
     }
+
+    buffer[size+1]='\0';
+
+    return buffer;
+}
+
+__attribute__((section(".text.start"))) void _start(){
+
+    init_mem();
+
+    int pr=0;
+    char* str = input_while();
+
+    while(str[pr]!='\0')pr++;
+
+    for(int i=0;i<pr;i++)printchar(i, 2, str[i]);
+
+    free(str);
 
     while (1);
 }
