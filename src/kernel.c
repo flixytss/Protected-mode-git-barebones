@@ -104,20 +104,6 @@ char* input_while(){
 
     return buffer;
 }
-static inline int Compare(char** str, const char* lfts){
-    int str_size=0;
-    int lfts_size=0;
-    while((*str)[str_size]!='\0')str_size++;
-    while(lfts[lfts_size]!='\0')lfts_size++;
-
-    if(lfts_size>str_size)return 0;
-    int success=0;
-
-    for(int i=0;i<lfts_size;i++)if((*str)[i]==lfts[lfts_size])success++;
-
-    if(success==str_size)return 1;
-    else return 0;
-}
 
 __attribute__((section(".text.start"))) void _start(){
 
@@ -129,8 +115,6 @@ __attribute__((section(".text.start"))) void _start(){
     while(str[pr]!='\0')pr++;
 
     for(int i=0;i<pr;i++)printchar(i, 2, str[i]);
-
-    if(Compare(&str, "poaa"))print(10, 10, "Is In");
 
     free(str);
 
