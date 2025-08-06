@@ -1,4 +1,5 @@
 #include "lib/memory.h"
+#include "lib/str.h"
 
 void printchar(unsigned int x, unsigned int y, char c){
     volatile char* video = (volatile char*)0xB8000;
@@ -61,9 +62,8 @@ unsigned char input(){
         }
     }
 }
-
 char* input_while(){
-    int x=0;
+    int x=1;
     int y=0;
     char s;
 
@@ -82,12 +82,6 @@ char* input_while(){
             size--;
         }
         else if((unsigned char)s==0x1C){
-            printchar(x, y, '\n');
-            printchar(x, y, ' ');
-            y++;
-            x=0;
-            move_cursor(x, y);
-
             break;
         }
         else{
@@ -109,14 +103,24 @@ __attribute__((section(".text.start"))) void _start(){
 
     init_mem();
 
-    int pr=0;
-    char* str = input_while();
+    while(1){
+        printchar(0, 0, '>');
 
-    while(str[pr]!='\0')pr++;
+        move_cursor(1, 0);
 
-    for(int i=0;i<pr;i++)printchar(i, 2, str[i]);
+        int pr=0;
+        char* str = input_while();
+        while(str[pr]!='\0')pr++;
 
-    free(str);
+        for(int i=0;i<pr;i++)printchar(i+1, 0, ' ');
+
+        if(strcmp(str, "exit")==0){
+            print(0, 1, "Exiting!");
+            break;
+        }
+
+        free(str);
+    }
 
     while (1);
 }

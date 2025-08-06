@@ -42,6 +42,12 @@ static inline void* malloc(size_t size) {
     }
     return NULL;
 }
+static inline void* realloc(Block* block, size_t size){
+    Block* new_block = (Block*)malloc(size+1);
+    if(!new_block)return NULL;
+    for(int i=0;i<size;i++)new_block[i]=block[i];
+    return new_block;
+}
 static inline void free(void* ptr) {
     if (!ptr) return;
 
