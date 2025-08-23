@@ -1,127 +1,38 @@
-#include "lib/memory.h"
-#include "lib/str.h"
+typedef unsigned long size_t;
+typedef unsigned int   u32int;
+typedef          int   s32int;
+typedef unsigned short u16int;
+typedef          short s16int;
+typedef unsigned char  u8int;
+typedef          char  s8int;
 
-void printchar(unsigned int x, unsigned int y, char c){
-    volatile char* video = (volatile char*)0xB8000;
-    int offset = (y*80+x)*2;
-    video[offset++]=c;
-    video[offset++]=0x07;
-}
-void print(unsigned int x, unsigned int y, const char* c){
-    volatile char* video = (volatile char*)0xB8000;
-    int offset = (y*80+x)*2;
-    int pr=0;
-    while (c[pr]!='\0')pr++;
-    for(int i=0;i<pr;i++){
-        printchar(x+i, y, c[i]);
-    }
+//outb: write a byte out to a specified port
+void outb(u16int port, u8int value){
+    __asm__ volatile("outb %1, %0" : : "dN"(port), "a"(value));
 }
 
-//Cursor
-void outb(unsigned short port, unsigned char value){__asm__ volatile ("outb %0, %1" : : "a"(value), "Nd"(port));}
-void move_cursor(unsigned int x, unsigned int y){
-    unsigned short pos = y*80+x;
-
+void move_cursor(u8int x, u8int y){
+    u16int cursor_location = y*80+x;
     outb(0x3D4, 14);
-    outb(0x3D5, (unsigned char)(pos>>8));
-
+    outb(0x3D5, cursor_location>>8);
     outb(0x3D4, 15);
-    outb(0x3D5, (unsigned char)(pos&0xFF));
+    outb(0x3D5, cursor_location);
 }
-
-//Input
-const char scancode_ascii[] = {
-    0,  27, '1', '2', '3', '4', '5', '6', '7', '8',
-    '9', '0', '-', '=', '\b', '\t', 'q', 'w', 'e', 'r',
-    't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', 0,
-    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
-    '\'', '`', 0, '\\', 'z', 'x', 'c', 'v', 'b', 'n',
-    'm', ',', '.', '/', 0, '*', 0, ' ', 0, 0
+void printchar(u8int x, u8int y, char c){
+    char* video = (char*)0xB8000;
+    u16int location = (y*80+x)*2;
+    video[location]=c;
+    video[location+1]=0x07;
+}
+void print(u8int x, u8int y, const char* text){
+    u8int size=0;
+    while(text[size]!='\0')size++;
+    for(u8int i=0;i<size;i++)printchar(x+i, y, text[i]);
 };
 
-static inline char ScanCode_To_Ascii(unsigned char inb){return scancode_ascii[inb];}
-static inline unsigned char inb(){
-    char result;
-    __asm__ volatile("inb %1, %0" : "=a"(result) : "Nd"((unsigned short)0x60));
-    return result;
-}
-unsigned char input(){
-    unsigned char scancode = 0;
-    char ascii = 0;
-    while (1) {
-        scancode = inb();
-        if (scancode & 0x80) continue;
-        if (scancode < sizeof(scancode_ascii)){
-            ascii = scancode_ascii[scancode];
-            if (ascii != 0) {
-                while ((inb() & 0x80) == 0);
-                if(scancode==0x1C)return 0x1C;
-                if(scancode==0x0E)return 0x0E;
-                else return ascii;
-            }
-        }
-    }
-}
-char* input_while(){
-    int x=1;
-    int y=0;
-    char s;
-
-    size_t size=0;
-    char* buffer=(char*)malloc((size+1)*sizeof(char));
-
-    while(1){
-        s = input();
-
-        if((unsigned char)s==0x0E){
-            printchar(x-1, y, ' ');
-            move_cursor(x-1, y);
-            x--;
-
-            buffer[size-1]='\0';
-            size--;
-        }
-        else if((unsigned char)s==0x1C){
-            break;
-        }
-        else{
-            printchar(x, y, s);
-            move_cursor(x+1, y);
-            x++;
-
-            buffer[size]=s;
-            size++;
-        }
-    }
-
-    buffer[size+1]='\0';
-
-    return buffer;
-}
-
 __attribute__((section(".text.start"))) void _start(){
+    move_cursor(5, 6);
+    print(20, 10, "ASM");
 
-    init_mem();
-
-    while(1){
-        printchar(0, 0, '>');
-
-        move_cursor(1, 0);
-
-        int pr=0;
-        char* str = input_while();
-        while(str[pr]!='\0')pr++;
-
-        for(int i=0;i<pr;i++)printchar(i+1, 0, ' ');
-
-        if(strcmp(str, "exit")==0){
-            print(0, 1, "Exiting!");
-            break;
-        }
-
-        free(str);
-    }
-
-    while (1);
 }
-//#include <> 0x1C
+//#include <>

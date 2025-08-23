@@ -27,7 +27,6 @@ start:
     int 0x13
     jc disk_error
 
-
     cli
 
     lgdt [gdt_descriptor]
