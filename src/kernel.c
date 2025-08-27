@@ -6,7 +6,50 @@ typedef          short s16int;
 typedef unsigned char  u8int;
 typedef          char  s8int;
 
-//outb: write a byte out to a specified port
+//IDT
+struct idt_entry_struct{
+    u16int base_lo;
+    u16int sel;
+    u8int alway0;
+    u8int flags;
+    u16int base_hi;
+} __attribute__((packed));
+typedef struct idt_entry_struct idt_entry_t;
+
+struct idt_ptr_struct{
+    u16int limit;
+    u32int base;
+} __attribute__((packed));
+typedef struct idt_ptr_struct idt_ptr_t;
+
+extern void isr0 ();
+extern void isr31();
+
+extern void idt_flush(u32int);
+static void init_idt();
+static void idt_set_gate(u8int,u32int,u16int,u8int);
+
+idt_entry_t idt_entries[256];
+idt_ptr_t   idt_ptr;
+
+static void init_idt(){
+   idt_ptr.limit = sizeof(idt_entry_t) * 256 -1;
+   idt_ptr.base  = (u32int)&idt_entries;
+
+   memset(&idt_entries, 0, sizeof(idt_entry_t)*256);
+
+   idt_set_gate( 0, (u32int)isr0 , 0x08, 0x8E);
+   idt_set_gate( 1, (u32int)isr1 , 0x08, 0x8E);
+   idt_set_gate(31, (u32int)isr32, 0x08, 0x8E);
+
+   idt_flush((u32int)&idt_ptr);
+}
+
+idt_entry_t idt_entries[256];
+idt_ptr_t   idt_ptr;
+
+//outb: send a byte to a specified port
+
 void outb(u16int port, u8int value){
     __asm__ volatile("outb %1, %0" : : "dN"(port), "a"(value));
 }
@@ -35,4 +78,3 @@ __attribute__((section(".text.start"))) void _start(){
     print(20, 10, "ASM");
 
 }
-//#include <>
