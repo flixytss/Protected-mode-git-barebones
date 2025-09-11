@@ -31,20 +31,6 @@ static void idt_set_gate(u8int,u32int,u16int,u8int);
 
 idt_entry_t idt_entries[256];
 idt_ptr_t   idt_ptr;
-
-static void init_idt(){
-   idt_ptr.limit = sizeof(idt_entry_t) * 256 -1;
-   idt_ptr.base  = (u32int)&idt_entries;
-
-   memset(&idt_entries, 0, sizeof(idt_entry_t)*256);
-
-   idt_set_gate( 0, (u32int)isr0 , 0x08, 0x8E);
-   idt_set_gate( 1, (u32int)isr1 , 0x08, 0x8E);
-   idt_set_gate(31, (u32int)isr32, 0x08, 0x8E);
-
-   idt_flush((u32int)&idt_ptr);
-}
-
 idt_entry_t idt_entries[256];
 idt_ptr_t   idt_ptr;
 
@@ -77,4 +63,5 @@ __attribute__((section(".text.start"))) void _start(){
     move_cursor(5, 6);
     print(20, 10, "ASM");
 
+    
 }
