@@ -1,4 +1,5 @@
-typedef unsigned long size_t;
+#include "libraries/libscratch.h"
+
 typedef unsigned int   u32int;
 typedef          int   s32int;
 typedef unsigned short u16int;
@@ -60,8 +61,9 @@ void print(u8int x, u8int y, const char* text){
 };
 
 __attribute__((section(".text.start"))) void _start(){
-    move_cursor(5, 6);
-    print(20, 10, "ASM");
-
+    int* new_group = (int*)malloc(3*sizeof(int));
+    for(unsigned long i=0;i<3;i++){
+        print(0+i, 0, IntToChar(new_group[i]));
+    }
     
 }

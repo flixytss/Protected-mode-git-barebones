@@ -1,8 +1,5 @@
 typedef unsigned long long size_t;
 
-void printchar(char* buf);
-void scanf(char* buffer);
-
 #define MEMORY_SIZE     1024
 #define NULL            ((void*)0)
 
@@ -45,13 +42,6 @@ void free(void* ptr){
     if(!ptr)return;
     Block* curr = ((Block*)ptr)-1;
     curr->free=1;
-}
-void printf(const char* buffer){
-    unsigned int size = 0;
-    while(buffer[size]!='\0')size++;
-    for(unsigned int i=0;i<size;i++){
-        printchar((char*)&buffer[i]);
-    }
 }
 void CharToInt(char *buffer, int *out){
     int nta;
