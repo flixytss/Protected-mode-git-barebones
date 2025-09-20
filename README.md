@@ -20,6 +20,7 @@ Like the **Bootx64.efi** for 64 bits OS
 
 That take care of jump to the protected mode (32 Bits) and then load the kernel
 It's on 16 Bits that mean the BIOS support it with the interruptions (int)
+They are usually writed in Asm
 
 ## What's the 16 Bits?
 
@@ -46,3 +47,9 @@ In 32 Bits, Here we can use 16 Bits registers but no 64 Bits
 
 The 32 Bits registers are: **RAX** **RDX** **RCX** **RBX**
 And the segments: **RBP** **RSP** **RSI** **RDI**
+
+## BootLoader
+
+Here, We finally arrive at BootLoader!
+The BootLoader File is the boot.asm
+That is in the folder **"Src"**
