@@ -250,7 +250,21 @@ And finally, Jumping to our Kernel!
 
 And here, We are using the Intruction "call" `call` `dword 0x10000`  
 The kernel can return, And that mean instead of stay on the kernel  
-It will jump to the boot again, And that `hlt` and `jmp $` are for precaution If the kernel return
-### What does that do?
+It will jump to the Protected mode tag (`protected_mode:`) again, And that `hlt` and `jmp $` are for precaution If the kernel return
+### What does the "jmp $" do?
 It Just make a loop
 The `jmp $` jump to it's own direction, And that make a loop
+
+## Ending the boot
+
+``` Assembly
+times 510-($-$$) db 0
+dw 0xAA55
+```
+
+The `times 510-($-$$) db 0` fills the restant space  
+The `dw 0xAA55` Sign the end of the boot
+
+# End of our Bootloader
+We finally end our Bootloader  
+But there is more, The Kernel!
