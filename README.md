@@ -1,4 +1,4 @@
-# Protected-mode-git-barebones
+# OS from scratch Barebones
 ## Mini Kernel with idt
 
 Hi there!
@@ -34,3 +34,15 @@ In 16 Bits, Obviously we don't use 32 or 64 Bits registers
 
 In 16 Bits we use the registers: **AX** **DX** **CX** **BX**
 And the segments: **BP** **SP** **SI** **DI**
+
+## What's the 32 Bits?
+
+Here we do the big jump to do EVERYTHING from scratch
+But there're are good news too, We can do whatever we want now
+But it gonna be more hard, And you can use 4Gb of ram
+
+### 32 Bits Registers
+In 32 Bits, Here we can use 16 Bits registers but no 64 Bits
+
+The 32 Bits registers are: **RAX** **RDX** **RCX** **RBX**
+And the segments: **RBP** **RSP** **RSI** **RDI**
