@@ -42,8 +42,8 @@ static void* malloc(size_t size){
 }
 static void free(void* ptr){
     if(!ptr)return;
-    Block* p = (Block*)ptr;
-    p->free=0;
+    Block* curr = (Block*)ptr;
+    curr->free=1;
 }
 static void *memset(void *s, int c, size_t size) {
     unsigned char *p = (unsigned char*)s;

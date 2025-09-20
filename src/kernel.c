@@ -68,9 +68,12 @@ __attribute__((section(".text.start"))) void _start(){
 
     monitor_put('\n');
 
+    move_cursor();
+
     while(1){
         char c;
         c=get_key();
+        move_cursor();
         monitor_put(c);
     }
 }

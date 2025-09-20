@@ -1,4 +1,3 @@
 # Protected-mode-git-barebones
+## Mini Kernel with idt
 
-I dont gonna explain ts
-I'm not crazy gng
