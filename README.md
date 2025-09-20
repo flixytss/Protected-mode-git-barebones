@@ -6,11 +6,11 @@ Here we have a mini kernel writed in C and a little bit of Asm as the boot and t
 
 ## Introducing the bootloader
 
-Ok, Firts we need to understand how does a computer work
+Ok, First we need to understand how does a computer work
 
 What happend when we turn on a computer?
 
-Firts the computer load the BIOS/UEFI (A small firmware program) That take care of the Computer low level settings
+First the computer load the BIOS/UEFI (A small firmware program) That take care of the Computer low level settings
 The BIOS find if everything is okay, Like the BIOS Battery and stuff like that
 Then the BIOS Or UEFI (It depends in what you use) will find a bootable OS
 And then run the Bootloader inside the OS
@@ -41,6 +41,7 @@ And the segments: **BP SP SI DI CS DS SS ES FS GS**
 Here we do the big jump to do EVERYTHING from scratch
 But there're are good news too, We can do whatever we want now
 But it gonna be more hard, And you can use 4Gb of ram
+And it's the Proteted mode
 
 ### 32 Bits Registers
 In 32 Bits, Here we can use 16 Bits registers but not 64 Bits
@@ -208,5 +209,48 @@ gdt_descriptor:
     dd gdt_start
 ```
 
-There isnt explain for this  
+This dosent need to be explain  
 Those're just variables that the GDT need
+
+## Arriving 32 Bits
+
+`[bits 32]` Finally we are on protected mode!
+
+``` Assembly
+protected_mode:
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov esp, 0x90000
+```
+
+Here's the protected mode tag, Now we can do our stuff from scratch!  
+
+``` Assembly
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov esp, 0x90000
+```
+
+That Define the segments, Because we need to initialize the protected mode
+
+``` Assembly
+call dword 0x10000
+```
+
+And finally, Jumping to our Kernel!
+
+``` Assembly
+    hlt
+    jmp $
+```
+
+And here, We are using the Intruction "call" `call` `dword 0x10000`  
+The kernel can return, And that mean instead of stay on the kernel  
+It will jump to the boot again, And that `hlt` and `jmp $` are for precaution If the kernel return
+### What does that do?
+It Just make a loop
+The `jmp $` jump to it's own direction, And that make a loop
