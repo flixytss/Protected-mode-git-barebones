@@ -52,20 +52,20 @@ disk_error:
 err_msg db 'Disk Error!', 0
 
 gdt_start:
-    dq 0        
+    dq 0
 
-    dw 0xFFFF          
+    dw 0xFFFF
     dw 0x0000
     db 0x00
-    db 10011010b           
-    db 11001111b      
-    db 0x00
-
-    dw 0xFFFF      
-    dw 0x0000
-    db 0x00
-    db 10010010b      
+    db 10011010b
     db 11001111b
+    db 0x00
+
+    dw 0xFFFF
+    dw 0x0000
+    db 0x00
+    db 10010010b
+    db 11001111
     db 0x00
 
 gdt_end:

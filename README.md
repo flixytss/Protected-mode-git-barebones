@@ -24,14 +24,14 @@ They are usually writed in Asm
 
 ## What's the 16 Bits?
 
-The Bootloaders begins at 16 Bits
+The Bootloaders begins at 16 Bits  
 16 Bits are supported by the BIOS with the interruptions (int)
 ### What're the Interruptions (int)
 Are call to the BIOS that support with a low level function
 Like print an character in a bootloader
 
 ### 16 Bits Registers
-In 16 Bits, Obviously we don't use 32 or 64 Bits registers
+In 16 Bits, Obviously we don't use 32 or 64 Bits registers  
 
 In 16 Bits we use the registers: **AX DX CX BX**
 And the segments: **BP SP SI DI CS DS SS ES FS GS**
@@ -43,7 +43,7 @@ But there're are good news too, We can do whatever we want now
 But it gonna be more hard, And you can use 4Gb of ram
 
 ### 32 Bits Registers
-In 32 Bits, Here we can use 16 Bits registers but no 64 Bits
+In 32 Bits, Here we can use 16 Bits registers but not 64 Bits
 
 The 32 Bits registers are: **RAX RDX RCX RBX**
 And the segments: **RBP RSP RSI RDI EIP**
@@ -146,3 +146,67 @@ It's obligatory if you want to jump to protected mode
 
 `cli` Disable the interruptions to active the GDT  
 `lgdt [gdt_descriptor]` Load the GDT
+
+``` Assembly
+    mov eax, cr0
+    or eax, 1
+    mov cr0, eax
+```
+
+Now, Just active the cr0 with a One, Like that slice of code
+
+``` Assembly
+    jmp 0x08:protected_mode
+```
+
+And finally jump to the protected mode, The `0x08:` indicate that is a FAR jump
+
+## Disk Error Message (Optional)
+### Read this if you want more security when you do the Sectors
+
+``` Assembly
+disk_error:
+    mov si, err_msg
+.print_err:
+    lodsb
+    or al, al
+    jz .done
+    mov ah, 0x0E
+    int 0x10
+    jmp .print_err
+.done:
+    jmp $
+```
+
+It's just a simple Print that use the variable err_msg db `'Disk Error!', 0`
+
+## GDT Variables
+### Here're the GDT Variables
+
+``` Assembly
+gdt_start:
+    dq 0
+
+    dw 0xFFFF
+    dw 0x0000
+    db 0x00
+    db 10011010b
+    db 11001111b
+    db 0x00
+
+    dw 0xFFFF
+    dw 0x0000
+    db 0x00
+    db 10010010b
+    db 11001111
+    db 0x00
+
+gdt_end:
+
+gdt_descriptor:
+    dw gdt_end - gdt_start -1
+    dd gdt_start
+```
+
+There isnt explain for this  
+Those're just variables that the GDT need
