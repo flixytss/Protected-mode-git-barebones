@@ -54,7 +54,7 @@ Here, We finally arrive at BootLoader!
 The BootLoader File is the boot.asm
 That is in the folder **"src"**
 
-### Start
+### Start:
 
 ``` Assembly
 [org 0x7C00]
@@ -63,3 +63,6 @@ bits 16
 jmp start
 nop
 ```
+
+Firts we define our Bootloader direction `[org 0x7C00]`
+And then our Bootloader bits, in this case: 16 Bits `bits 16`
