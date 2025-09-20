@@ -127,14 +127,22 @@ This's a quick question, The interruption 10 control the graphics stuff like col
     int 0x13
     jc disk_error
 ```
-`mov ah, 0x02` Move ah to the function **"Read Sector"**
-`mov al, 14` Move al to 14, That's gonna be the numbers of sector to read
-`mov ch, 0` Move ch to 0, The cylinder
-`mov cl, 2` Move cl to 2, The Sector to load, The First sector is our bootloader and the next is the kernel
-`mov dh, 0` Move dh to 0, The head
-`mov dl, 0x00` Move dl to 0x00, The Next Sector direction
-`mov bx, 0x1000` Move bx tp 0x1000, offset where to save
-`mov es, bx` Move es to bx, The Segment
-`xor bx, bx` Restart bx, Define bx to 0
-`int 0x13` Call the BIOS with the arguments already passed
-`jc disk_error` If there is an error, jump to disk_error
+`mov ah, 0x02` Move ah to the function **"Read Sector"**.  
+`mov al, 14` Move al to 14, That's gonna be the numbers of sector to read.  
+`mov ch, 0` Move ch to 0, The cylinder.  
+`mov cl, 2` Move cl to 2, The Sector to load, The First sector is our bootloader and the next is the kernel.  
+`mov dh, 0` Move dh to 0, The head.  
+`mov dl, 0x00` Move dl to 0x00, The Next Sector direction.  
+`mov bx, 0x1000` Move bx tp 0x1000, offset where to save.  
+`mov es, bx` Move es to bx, The Segment.  
+`xor bx, bx` Restart bx, Define bx to 0.  
+`int 0x13` Call the BIOS with the arguments already passed.  
+`jc disk_error` If there is an error, jump to disk_error.  
+
+## Loading the GDT (Global Descriptor Table)
+### What's the GDT (Global Descriptor Table)?
+Is a fundamental data structure for x86 processors that provides information to the CPU about memory segments
+It's obligatory if you want to jump to protected mode
+
+`cli` Disable the interruptions to active the GDT  
+`lgdt [gdt_descriptor]` Load the GDT
