@@ -127,7 +127,7 @@ This's a quick question, The interruption 10 control the graphics stuff like col
     int 0x13
     jc disk_error
 ```
-`mov ah, 0x02` Move ah to the function **"Read Sector"**.  
+`mov ah, 0x02` Move ah to 0x02 that is the function for **"Read Sector"**.  
 `mov al, 14` Move al to 14, That's gonna be the numbers of sector to read.  
 `mov ch, 0` Move ch to 0, The cylinder.  
 `mov cl, 2` Move cl to 2, The Sector to load, The First sector is our bootloader and the next is the kernel.  
