@@ -56,10 +56,10 @@ That is in the folder **"src"**
 
 ### Start
 
-´´´ Assembly
+``` Assembly
 [org 0x7C00]
 bits 16
 
 jmp start
 nop
-´´´
+```
