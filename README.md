@@ -33,8 +33,8 @@ Like print an character in a bootloader
 ### 16 Bits Registers
 In 16 Bits, Obviously we don't use 32 or 64 Bits registers
 
-In 16 Bits we use the registers: **AX** **DX** **CX** **BX**
-And the segments: **BP** **SP** **SI** **DI**
+In 16 Bits we use the registers: **AX DX CX BX**
+And the segments: **BP SP SI DI CS DS SS ES FS GS**
 
 ## What's the 32 Bits?
 
@@ -45,11 +45,21 @@ But it gonna be more hard, And you can use 4Gb of ram
 ### 32 Bits Registers
 In 32 Bits, Here we can use 16 Bits registers but no 64 Bits
 
-The 32 Bits registers are: **RAX** **RDX** **RCX** **RBX**
-And the segments: **RBP** **RSP** **RSI** **RDI**
+The 32 Bits registers are: **RAX RDX RCX RBX**
+And the segments: **RBP RSP RSI RDI EIP**
 
 ## BootLoader
 
 Here, We finally arrive at BootLoader!
 The BootLoader File is the boot.asm
-That is in the folder **"Src"**
+That is in the folder **"src"**
+
+### Start
+
+´´´ Assembly
+[org 0x7C00]
+bits 16
+
+jmp start
+nop
+´´´
