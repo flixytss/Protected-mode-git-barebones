@@ -1,3 +1,36 @@
 # Protected-mode-git-barebones
 ## Mini Kernel with idt
 
+Hi there!
+Here we have a mini kernel writed in C and a little bit of Asm as the boot and the LDT
+
+## Introducing the bootloader
+
+Ok, Firts we need to understand how does a computer work
+
+What happend when we turn on a computer?
+
+Firts the computer load the BIOS/UEFI (A small firmware program) That take care of the Computer low level settings
+The BIOS find if everything is okay, Like the BIOS Battery and stuff like that
+Then the BIOS Or UEFI (It depends in what you use) will find a bootable OS
+And then run the Bootloader inside the OS
+Like the **Bootx64.efi** for 64 bits OS
+
+## What's the Bootloader?
+
+That take care of jump to the protected mode (32 Bits) and then load the kernel
+It's on 16 Bits that mean the BIOS support it with the interruptions (int)
+
+## What's the 16 Bits?
+
+The Bootloaders begins at 16 Bits
+16 Bits are supported by the BIOS with the interruptions (int)
+### What're the Interruptions (int)
+Are call to the BIOS that support with a low level function
+Like print an character in a bootloader
+
+### 16 Bits Registers
+In 16 Bits, Obviously we don't use 32 or 64 Bits registers
+
+In 16 Bits we use the registers: **AX** **DX** **CX** **BX**
+And the segments: **BP** **SP** **SI** **DI**
