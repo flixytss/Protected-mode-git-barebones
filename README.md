@@ -54,7 +54,7 @@ Here, We finally arrive at BootLoader!
 The BootLoader File is the boot.asm
 That is in the folder **"src"**
 
-### Start:
+### The beginning
 
 ``` Assembly
 [org 0x7C00]
@@ -66,3 +66,44 @@ nop
 
 Firts we define our Bootloader direction `[org 0x7C00]`
 And then our Bootloader bits, in this case: 16 Bits `bits 16`
+And finally we jump to our main function `jmp start`
+
+``` Assembly
+start:
+    cli
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov sp, 0x7C00
+```
+
+In our tag `start` we have a cli that disable the hardware interrupts,
+It give more security when we modify the segments
+because when we start the bootloader the BIOS can do some interrupts, and while we are modifying
+our segments, It can overwrite some importants stuff
+
+``` Assembly
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+```
+
+Firts we revert ax to 0, Then we move the pile to ax
+
+``` Assembly
+    mov sp, 0x7C00
+```
+
+Then we initialize the pile right in the Bootloader direction
+
+``` Assembly
+    mov ax, 0x0003
+    int 0x10
+```
+
+`mov ax, 0x0003` There we move the register ax to 0x0003
+And then we use the interruption 10
+#### What's does the interruption 10 do?
+This's a quick question, The interruption 10 control the graphics stuff like colors, text, etc
