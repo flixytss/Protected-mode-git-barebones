@@ -105,5 +105,36 @@ Then we initialize the pile right in the Bootloader direction
 
 `mov ax, 0x0003` There we move the register ax to 0x0003
 And then we use the interruption 10
+
+#### What's does that do?
+It just clean all the text from the screen
+
 #### What's does the interruption 10 do?
 This's a quick question, The interruption 10 control the graphics stuff like colors, text, etc
+
+## Boot Sectors
+
+``` Assembly
+    mov ah, 0x02
+    mov al, 14
+    mov ch, 0
+    mov cl, 2
+    mov dh, 0
+    mov dl, 0x00
+    mov bx, 0x1000
+    mov es, bx
+    xor bx, bx
+    int 0x13
+    jc disk_error
+```
+`mov ah, 0x02` Move ah to the function **"Read Sector"**
+`mov al, 14` Move al to 14, That's gonna be the numbers of sector to read
+`mov ch, 0` Move ch to 0, The cylinder
+`mov cl, 2` Move cl to 2, The Sector to load, The First sector is our bootloader and the next is the kernel
+`mov dh, 0` Move dh to 0, The head
+`mov dl, 0x00` Move dl to 0x00, The Next Sector direction
+`mov bx, 0x1000` Move bx tp 0x1000, offset where to save
+`mov es, bx` Move es to bx, The Segment
+`xor bx, bx` Restart bx, Define bx to 0
+`int 0x13` Call the BIOS with the arguments already passed
+`jc disk_error` If there is an error, jump to disk_error
