@@ -43,4 +43,42 @@ Now to print a character is like this
     video[1]=0x07;
 ```
 First, We define in the variable video the char that we want to print, In this case it would be 'A',
-Then we use the magic char (**0x07**)
+Then we use the magic char (**0x07**), It's just a char in hexadecimal
+
+### How to put character in a specified location (X, Y)?
+The **framebuffer** is 80x25, 80 rows and 25 colums, Ok First we define the variable "location"
+```C
+    u16int location = (y*80+x)*2;
+```
+Why it's multiplied by 2? Because each element is 2 bytes (16 bits) long. If you're indexing an array of 16-bit values, for example, your index would just be y*80+x.  
+
+And with the location defined, To put a char on that location, You should do
+```C
+    video[location]='A';
+    video[location+1]=0x07;
+```
+
+### How to print a sentence?
+Finally, With all that, We can do our print!
+
+```C
+void monitor_put(u8int x, u8int y, char c){
+    char* video = (char*)0xB8000;
+    u16int location = (y*80+x)*2;
+    video[location] = c;
+    video[location+1] = 0x07;
+}
+```
+The only thing to explain there is the void function, It's just a void function with the parameters x, y and c as the character to print
+
+```C
+void monitor_write(u8int x, u8int y, const char* str){
+    size_t str_size = 0;
+    while(str[str_size]!='\0')str_size++;
+
+    for(size_t i=0;i < str_size;i++)monitor_put(x+i, y, str[i]);
+}
+```
+`size_t str_size = 0;` The variable that gonna contain the string's size
+`while(str[str_size]!='\0')str_size++;` That gonna make a loop, If the array str in the direction that str_size say. Isnt '\0' (Because on C every String or a char array end with a \0) It gonna increment the variable "str_size"
+`for(size_t i=0;i < str_size;i++)monitor_put(x+i, y, str[i]);` This is a "for" loop (If i isnt str_size then increment it) that print the char that i say of the parameter str
