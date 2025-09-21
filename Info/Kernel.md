@@ -29,8 +29,7 @@ Like we said, The **framebuffer** is just an array, We can control it by the sam
 ```C
 __attribute__((section(".text.start"))) void _start(){...}
 ```
-First define the _start function that begin when you call it from the boot  
-Then
+First define the _start function that begin when you call it from the boot, Then
 ```C
     char* video = (char*)0xB8000;
 ```
@@ -79,6 +78,6 @@ void monitor_write(u8int x, u8int y, const char* str){
     for(size_t i=0;i < str_size;i++)monitor_put(x+i, y, str[i]);
 }
 ```
-`size_t str_size = 0;` The variable that gonna contain the string's size
-`while(str[str_size]!='\0')str_size++;` That gonna make a loop, If the array str in the direction that str_size say. Isnt '\0' (Because on C every String or a char array end with a \0) It gonna increment the variable "str_size"
+`size_t str_size = 0;` The variable that gonna contain the string's size  
+`while(str[str_size]!='\0')str_size++;` That gonna make a loop, If the array str in the direction that str_size say. Isnt '\0' (Because on C every String or a char array end with a \0) It gonna increment the variable "str_size"  
 `for(size_t i=0;i < str_size;i++)monitor_put(x+i, y, str[i]);` This is a "for" loop (If i isnt str_size then increment it) that print the char that i say of the parameter str
