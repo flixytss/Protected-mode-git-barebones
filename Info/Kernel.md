@@ -4,7 +4,7 @@ Read this if you already had read the Bootloader md
 
 We finally arrived to the kernel! (If you read the Bootloader info)
 
-Here, We gonna be using the kernel file (**kernel.c**) that is inside of the folder **src**  
+Here, We gonna be using the kernel file (**kernel.c**) that is inside of the folder **src**
 And We gonna be using it's Tools files (**The .h files**)
 
 ## The basic stuff
@@ -15,8 +15,8 @@ We will go step per step, We first learn about how to print an character
 
 To manipulate the screen, The basic teory is the **framebuffer**
 #### What's the framebuffer?
-The **framebuffer** is the screen memory direction (**0xB8000**), With that we can manipulate characters, ONLY Characters  
-not pixels, We manipulate it like it's just normal RAM  
+The **framebuffer** is the screen memory direction (**0xB8000**), With that we can manipulate characters, ONLY Characters
+not pixels, We manipulate it like it's just normal RAM
 But it's not simple RAM, It's part of the VGA video controller Dedicated memory
 
 It's just a simple array of 16 Bits, Each 16 Bits value represent a value on the screen  
@@ -129,7 +129,7 @@ And finally we move our cursor position
 Look, When we do `u16int x = 0x1234;` That's in binary **00010010 00110100**
 The **00010010** is the higher byte and the **00110100**
 
-###### What's does ">>" means?
+##### What's does ">>" means?
 In the C arithmetic that means move to the right or left (It depends of the sign) the bytes from a binary,
 When you do `u16int x = 0x1;` X in binary is **0001**, And when you do `u8int y = x>>4;` Y's **0000**, ¿Why?
 Because 0001 move to the right 4 times (0001 -> 0000) give **0000**, If you didn't understood. Find more examples on internet
