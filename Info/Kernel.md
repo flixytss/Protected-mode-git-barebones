@@ -1,3 +1,5 @@
+Read this if you already had read the Bootloader md
+
 # Kernel
 
 We finally arrived to the kernel! (If you read the Bootloader info)
@@ -101,3 +103,39 @@ _start:
     inb al, 0x60
 ```
 Here, We read the port 0x60 and save it in the register al
+
+### How to move the cursor?
+We are gonna be using the outb, To send bytes!
+
+``` C
+void move_cursor(u8int x, u8int y){
+    u16int location = (y*80)+x;
+    outb(0x3D4, 14);
+    outb(0x3D5, location>>8);
+    outb(0x3D4, 15);
+    outb(0x3D5, location);
+}
+```
+`u16int location = (y*80)+x;` Firts calculate the location with the formula `(y*80)+x`  
+`outb(0x3D4, 14);` Indicate the Cursor manager port that we gonna send the higher byte of the location to the receiving port (0x3D5)  
+`outb(0x3D5, location>>8);` Send it  
+`outb(0x3D4, 15);` Indicate the Cursor manager port that we gonna send the lower byte  
+`outb(0x3D5, location);` Send it  
+
+And finally we move our cursor position
+
+
+##### Why "x>>8" Means the high byte from something?
+Look, When we do `u16int x = 0x1234;` That's in binary **00010010 00110100**
+The **00010010** is the higher byte and the **00110100**
+
+###### What's does ">>" means?
+In the C arithmetic that means move to the right or left (It depends of the sign) the bytes from a binary,
+When you do `u16int x = 0x1;` X in binary is **0001**, And when you do `u8int y = x>>4;` Y's **0000**, ¿Why?
+Because 0001 move to the right 4 times (0001 -> 0000) give **0000**, If you didn't understood. Find more examples on internet
+, It isn't easy to understand at the first try
+
+So when you move 8 times **00010010 00110100** to the right you will have **00000000 00010010**
+
+### How to make an input?
+Now we're gonna instead of send a byte, We're gonna read one with **inb**
