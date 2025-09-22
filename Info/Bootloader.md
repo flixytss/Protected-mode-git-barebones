@@ -268,3 +268,5 @@ The `dw 0xAA55` Sign the end of the boot
 # End of our Bootloader
 We finally end our Bootloader  
 But there is more, The Kernel!
+
+![Alt text](Diagram.png)
